@@ -1621,27 +1621,31 @@ button {
     height: calc(78px + env(safe-area-inset-bottom));
     flex-direction: row;
     align-items: center;
-    padding: 8px 14px calc(8px + env(safe-area-inset-bottom));
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
     border-right: 0;
     border-top: 1px solid var(--border);
     justify-content: flex-start;
-    gap: 8px;
-    overflow: visible;
+    gap: 4px;
+    overflow-x: auto;
+    overflow-y: visible;
     background: linear-gradient(180deg, rgba(18, 20, 25, 0.92), rgba(18, 20, 25, 0.98));
+    scrollbar-width: none;
   }
 
-  .sidebar-tool {
-    width: 56px;
+  .left-sidebar > .sidebar-tool {
+    display: flex;
+    width: 42px;
+    min-width: 42px;
     height: 56px;
-    border-radius: 18px;
+    border-radius: 16px;
   }
 
-  .sidebar-label {
-    font-size: 10px;
+  .left-sidebar > .sidebar-tool .sidebar-label {
+    font-size: 8px;
   }
 
   #tool-multi-select {
-    display: none;
+    display: flex !important;
   }
 
   .sidebar-key,
@@ -1649,9 +1653,8 @@ button {
     display: none;
   }
 
-  .left-sidebar {
-    overflow-x: visible;
-    overflow-y: visible;
+  .left-sidebar::-webkit-scrollbar {
+    display: none;
   }
 
   .style-dropdown-wrap {
