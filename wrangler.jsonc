@@ -1,0 +1,24 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "possingboard",
+  "main": "./worker/index.js",
+  "compatibility_date": "2026-04-24",
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/api/*"
+    ]
+  },
+  "r2_buckets": [
+    {
+      "binding": "POSINGBOARD_BUCKET",
+      "bucket_name": "possingboard",
+      "preview_bucket_name": "possingboard"
+    }
+  ],
+  "vars": {
+    "STATE_KEY": "boards/default.json",
+    "PUBLIC_ASSET_BASE_URL": "https://pub-c570e2c17d7a4c909ea0fe2e910c7113.r2.dev"
+  }
+}

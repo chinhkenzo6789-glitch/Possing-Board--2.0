@@ -1,0 +1,12 @@
+{
+  "name": "posingboard-online",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "check": "node --check script.js && node --check config.js && node --check worker/index.js"
+  },
+  "devDependencies": {
+    "wrangler": "^4.14.0"
+  }
+}

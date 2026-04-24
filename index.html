@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Posing Board</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="toolbar">
+    <div class="toolbar-left">
+      <span class="app-logo">POSING<span>BOARD</span></span>
+      <span class="current-style-badge" id="current-style-badge">Đứng</span>
+    </div>
+
+    <div class="toolbar-center">
+      <button class="btn-add" id="btn-add-node">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+        Thêm node
+      </button>
+      <button class="btn-tool" id="btn-undo" title="Undo (Ctrl/Cmd+Z)">Undo</button>
+      <button class="btn-tool" id="btn-redo" title="Redo (Ctrl/Cmd+Shift+Z)">Redo</button>
+      <button class="btn-tool" id="btn-fit-view" title="Full view (F)">Full view</button>
+      <button class="btn-tool" id="btn-shot-list" title="Shot list">Shot list</button>
+      <button class="btn-tool" id="btn-presenter" title="Presenter mode">Presenter</button>
+      <div class="toolbar-menu-wrap">
+        <button class="btn-tool" id="btn-layout-menu" title="Auto layout">Layout</button>
+        <div class="toolbar-menu" id="layout-menu">
+          <button class="menu-item" data-layout="grid">Grid</button>
+          <button class="menu-item" data-layout="row">Hàng ngang</button>
+          <button class="menu-item" data-layout="column">Hàng dọc</button>
+          <button class="menu-item" data-layout="mindmap">Mindmap</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toolbar-right">
+      <span class="auth-user" id="auth-user" hidden></span>
+      <button class="btn-tool" id="btn-logout" hidden>Đăng xuất</button>
+      <button class="btn-tool" id="btn-ai-settings" title="Tải AI pose local">AI pose</button>
+      <span class="zoom-label" id="zoom-label">100%</span>
+      <button class="btn-clear" id="btn-clear-all">Xóa tất cả</button>
+    </div>
+  </header>
+
+  <aside class="left-sidebar">
+    <button class="sidebar-tool active" id="tool-hand" title="Di chuyển (H / Space)">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <path d="M8 3.5V10M8 3.5C8 2.67 8.67 2 9.5 2S11 2.67 11 3.5V8M8 3.5C8 2.67 7.33 2 6.5 2S5 2.67 5 3.5V9M11 8V5.5C11 4.67 11.67 4 12.5 4S14 4.67 14 5.5V10C14 13.31 11.31 16 8 16H7C4.79 16 3 14.21 3 12V9C3 8.17 3.67 7.5 4.5 7.5S6 8.17 6 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      <span class="sidebar-label">Hand</span>
+      <span class="sidebar-key">H</span>
+    </button>
+
+    <button class="sidebar-tool" id="tool-add" title="Thêm node (+)">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <rect x="2" y="2" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.4" />
+        <path d="M10 6v8M6 10h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+      </svg>
+      <span class="sidebar-label">Add</span>
+      <span class="sidebar-key">+</span>
+    </button>
+
+    <button class="sidebar-tool" id="tool-multi-select" title="Chon nhieu (M)">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <rect x="2.5" y="4" width="6" height="6" rx="1.6" stroke="currentColor" stroke-width="1.4" />
+        <rect x="11.5" y="4" width="6" height="6" rx="1.6" stroke="currentColor" stroke-width="1.4" />
+        <rect x="7" y="11" width="6" height="6" rx="1.6" stroke="currentColor" stroke-width="1.4" />
+      </svg>
+      <span class="sidebar-label">Multi</span>
+      <span class="sidebar-key">M</span>
+    </button>
+
+    <div class="sidebar-divider"></div>
+
+    <button class="sidebar-tool" id="tool-connect" title="Nối dây dễ (C)">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <circle cx="4" cy="10" r="2.5" stroke="currentColor" stroke-width="1.4" />
+        <circle cx="16" cy="10" r="2.5" stroke="currentColor" stroke-width="1.4" />
+        <path d="M6.5 10C8 10 8 6 10 6s2 4 3.5 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+      </svg>
+      <span class="sidebar-label">Connect</span>
+      <span class="sidebar-key">C</span>
+    </button>
+
+    <button class="sidebar-tool" id="tool-delete-conn" title="Xóa kết nối (-)">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <circle cx="4" cy="10" r="2.5" stroke="currentColor" stroke-width="1.4" />
+        <circle cx="16" cy="10" r="2.5" stroke="currentColor" stroke-width="1.4" />
+        <path d="M7 10h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="2 2" />
+        <path d="M9 8l2 2-2 2M11 8l-2 2 2 2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+      </svg>
+      <span class="sidebar-label">Cut</span>
+      <span class="sidebar-key">-</span>
+    </button>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="style-dropdown-wrap">
+      <button class="sidebar-tool style-dropdown-btn" id="style-dropdown-btn" title="Chọn style">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <rect x="1" y="1" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3" />
+          <rect x="10" y="1" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3" />
+          <rect x="1" y="10" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3" />
+          <rect x="10" y="10" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3" />
+        </svg>
+        <span class="sidebar-label">Style</span>
+        <svg class="dropdown-arrow" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+          <path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+        </svg>
+      </button>
+      <div class="style-dropdown-menu" id="style-dropdown-menu">
+        <button class="style-option active" data-style="Đứng">Đứng</button>
+        <button class="style-option" data-style="Chạm">Chạm</button>
+        <button class="style-option" data-style="Đi">Đi</button>
+        <button class="style-option" data-style="Tựa">Tựa</button>
+        <button class="style-option" data-style="Ngồi">Ngồi</button>
+        <button class="style-option" data-style="Groom">Groom</button>
+        <button class="style-option" data-style="Bride">Bride</button>
+        <button class="style-option" data-style="PSC">PSC</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="selection-toolbar" id="selection-toolbar">
+    <span class="selection-count" id="selection-count">0 node</span>
+    <button class="btn-tool" id="btn-align-left">Căn trái</button>
+    <button class="btn-tool" id="btn-align-top">Căn trên</button>
+    <button class="btn-tool" id="btn-distribute-x">Giãn ngang</button>
+    <button class="btn-tool" id="btn-distribute-y">Giãn dọc</button>
+    <button class="btn-tool" id="btn-duplicate-selection">Nhân bản</button>
+  </div>
+
+  <main class="canvas-wrapper" id="canvas-wrapper">
+    <div class="selection-marquee" id="selection-marquee" hidden></div>
+    <svg class="connections-svg" id="connections-svg"></svg>
+    <div class="canvas" id="canvas"></div>
+  </main>
+
+  <div class="context-menu" id="canvas-context-menu">
+    <button class="ctx-item" id="ctx-canvas-add">Thêm node</button>
+    <button class="ctx-item" id="ctx-canvas-fullview">Full view</button>
+  </div>
+
+  <div class="context-menu" id="context-menu">
+    <button class="ctx-item" id="ctx-view">Xem lớn</button>
+    <button class="ctx-item" id="ctx-edit">Chỉnh sửa</button>
+    <button class="ctx-item" id="ctx-ai-note">Tạo note AI</button>
+    <button class="ctx-item" id="ctx-delete">Xóa node</button>
+  </div>
+
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">Thêm node mới</span>
+        <button class="modal-close" id="modal-close" aria-label="Đóng">✕</button>
+      </div>
+
+      <div class="drop-zone" id="drop-zone">
+        <input type="file" id="file-input" accept="image/*" multiple hidden />
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <path d="M16 4v16M8 12l8-8 8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M4 24h24v4H4v-4z" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+        <p>Kéo thả ảnh vào đây</p>
+        <span>hoặc</span>
+        <button class="btn-browse" id="btn-browse">Chọn từ máy tính</button>
+      </div>
+
+      <div class="divider-h"></div>
+
+      <div class="url-row">
+        <input type="text" id="url-input" placeholder="Dán link URL ảnh..." />
+        <button class="btn-url" id="btn-url-add">Thêm</button>
+      </div>
+
+      <div class="form-group">
+        <label for="node-title">Title</label>
+        <input type="text" id="node-title" placeholder="Tên posing..." />
+      </div>
+
+      <div class="form-group">
+        <label for="node-note">Ghi chú</label>
+        <textarea id="node-note" placeholder="Mô tả posing, tips, lưu ý..." rows="3"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Số thứ tự từng ảnh</label>
+        <p class="form-help">
+          Có thể nhập tay theo dạng <strong>1</strong>, <strong>1.1</strong>, <strong>1.2</strong>. Nếu để trống, app tự điền 1, 2, 3...
+        </p>
+        <div class="preview-area" id="preview-area"></div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="upload-progress" id="upload-progress" hidden>
+          <div class="upload-progress-track">
+            <div class="upload-progress-fill" id="upload-progress-fill"></div>
+          </div>
+          <span class="upload-progress-text" id="upload-progress-text">Dang tai anh 0%</span>
+        </div>
+        <button class="btn-cancel" id="btn-cancel">Hủy</button>
+        <button class="btn-confirm" id="btn-confirm">Tạo node</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="edit-modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">Chỉnh sửa node</span>
+        <button class="modal-close" id="edit-modal-close" aria-label="Đóng">✕</button>
+      </div>
+
+      <div class="form-group">
+        <label for="edit-title">Title</label>
+        <input type="text" id="edit-title" placeholder="Tên posing..." />
+      </div>
+
+      <div class="form-group">
+        <label for="edit-order">Số thứ tự</label>
+        <input type="text" id="edit-order" placeholder="Ví dụ: 1 hoặc 1.2" />
+      </div>
+
+      <div class="form-group">
+        <label for="edit-note">Ghi chú</label>
+        <textarea id="edit-note" rows="3" placeholder="Mô tả, tips..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <div class="label-row">
+          <label for="edit-ai-note">Note AI</label>
+          <button class="btn-inline" id="edit-ai-generate" type="button">Tạo note AI</button>
+        </div>
+        <textarea id="edit-ai-note" rows="5" placeholder="AI note sẽ hiện ở đây..."></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" id="edit-cancel">Hủy</button>
+        <button class="btn-confirm" id="edit-confirm">Lưu</button>
+      </div>
+    </div>
+  </div>
+
+  <aside class="shot-list-panel" id="shot-list-panel">
+    <div class="shot-list-header">
+      <div>
+        <div class="panel-title">Shot List</div>
+        <div class="panel-subtitle" id="shot-list-subtitle">0 pose</div>
+      </div>
+      <button class="modal-close" id="shot-list-close" aria-label="Đóng shot list">✕</button>
+    </div>
+    <div class="shot-list-body" id="shot-list-body"></div>
+  </aside>
+
+  <div class="image-viewer" id="image-viewer" aria-hidden="true">
+    <button class="viewer-close" id="viewer-close" aria-label="Đóng viewer">✕</button>
+    <button class="viewer-nav viewer-prev" id="viewer-prev" aria-label="Ảnh trước">←</button>
+    <button class="viewer-nav viewer-next" id="viewer-next" aria-label="Ảnh tiếp theo">→</button>
+
+    <div class="viewer-stage" id="viewer-stage">
+      <img id="viewer-image" alt="Ảnh posing" />
+    </div>
+
+    <div class="viewer-caption">
+      <div class="viewer-topline">
+        <span class="viewer-order" id="viewer-order">1</span>
+        <span class="viewer-style" id="viewer-style">Đứng</span>
+      </div>
+      <div class="viewer-title" id="viewer-title">Untitled</div>
+      <div class="viewer-note" id="viewer-note"></div>
+      <div class="viewer-hint" id="viewer-hint">PC: dùng phím ← → để next. Mobile: vuốt trái/phải.</div>
+    </div>
+  </div>
+
+  <div class="presenter-overlay" id="presenter-overlay" aria-hidden="true">
+    <button class="viewer-close" id="presenter-close" aria-label="Đóng presenter">✕</button>
+    <button class="viewer-nav viewer-prev" id="presenter-prev" aria-label="Ảnh trước">←</button>
+    <button class="viewer-nav viewer-next" id="presenter-next" aria-label="Ảnh tiếp theo">→</button>
+
+    <div class="presenter-stage">
+      <div class="presenter-image-wrap">
+        <img id="presenter-image" alt="Ảnh presenter" />
+      </div>
+      <div class="presenter-info">
+        <div class="presenter-topline">
+          <span class="viewer-order" id="presenter-order">1</span>
+          <span class="viewer-style" id="presenter-style">Đứng</span>
+        </div>
+        <div class="presenter-title" id="presenter-title">Untitled</div>
+        <div class="presenter-note" id="presenter-note"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-overlay open" id="auth-overlay" aria-hidden="false">
+    <div class="auth-card">
+      <div class="auth-kicker">CINO x T.Long</div>
+      <h1 class="auth-title">Đăng nhập Posing Board</h1>
+
+      <form class="auth-form" id="auth-form">
+        <label class="auth-label" for="auth-username">Tài khoản</label>
+        <input class="auth-input" id="auth-username" type="text" autocomplete="username" placeholder="Nhập tài khoản..." required />
+
+        <label class="auth-label" for="auth-password">Mật khẩu</label>
+        <input class="auth-input" id="auth-password" type="password" autocomplete="current-password" placeholder="Nhập mật khẩu..." required />
+
+        <label class="auth-remember">
+          <input id="auth-remember" type="checkbox" />
+          <span>Nhớ mật khẩu cho lần sau</span>
+        </label>
+
+        <div class="auth-error" id="auth-error" hidden></div>
+        <button class="auth-submit" id="auth-submit" type="submit">Mở dự án</button>
+        <div class="auth-progress" id="auth-progress" hidden>
+          <div class="auth-progress-head">
+            <span class="auth-progress-spinner" aria-hidden="true"></span>
+            <span class="auth-progress-title" id="auth-progress-title">Dang dang nhap...</span>
+          </div>
+          <div class="auth-progress-track">
+            <div class="auth-progress-fill" id="auth-progress-fill"></div>
+          </div>
+          <div class="auth-progress-note" id="auth-progress-note">Dang ket noi</div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="copyright">CINO x T.Long</div>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.7.0/firebase-database-compat.js"></script>
+  <script src="config.js"></script>
+  <script src="firebase-init.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
