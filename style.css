@@ -1626,10 +1626,8 @@ button {
     border-top: 1px solid var(--border);
     justify-content: flex-start;
     gap: 4px;
-    overflow-x: auto;
-    overflow-y: visible;
+    overflow: visible;
     background: linear-gradient(180deg, rgba(18, 20, 25, 0.92), rgba(18, 20, 25, 0.98));
-    scrollbar-width: none;
   }
 
   .left-sidebar > .sidebar-tool {
@@ -1650,10 +1648,6 @@ button {
 
   .sidebar-key,
   .sidebar-divider {
-    display: none;
-  }
-
-  .left-sidebar::-webkit-scrollbar {
     display: none;
   }
 
