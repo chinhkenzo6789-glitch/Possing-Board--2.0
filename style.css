@@ -1625,19 +1625,23 @@ button {
     border-right: 0;
     border-top: 1px solid var(--border);
     justify-content: flex-start;
-    gap: 6px;
+    gap: 8px;
     overflow: visible;
     background: linear-gradient(180deg, rgba(18, 20, 25, 0.92), rgba(18, 20, 25, 0.98));
   }
 
   .sidebar-tool {
-    width: 48px;
+    width: 56px;
     height: 56px;
-    border-radius: 16px;
+    border-radius: 18px;
   }
 
   .sidebar-label {
-    font-size: 9px;
+    font-size: 10px;
+  }
+
+  #tool-multi-select {
+    display: none;
   }
 
   .sidebar-key,
@@ -1659,9 +1663,9 @@ button {
 
   .style-dropdown-btn {
     display: flex;
-    width: 62px;
-    height: 60px;
-    border-radius: 18px;
+    width: 72px;
+    height: 64px;
+    border-radius: 22px;
   }
 
   .style-dropdown-menu {
