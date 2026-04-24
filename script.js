@@ -144,6 +144,34 @@ const presenterStyle = document.getElementById("presenter-style");
 const presenterTitle = document.getElementById("presenter-title");
 const presenterNote = document.getElementById("presenter-note");
 
+function ensureMultiSelectTool() {
+  let button = document.getElementById("tool-multi-select");
+  if (button) return button;
+
+  const sidebar = document.querySelector(".left-sidebar");
+  if (!sidebar) return null;
+
+  button = document.createElement("button");
+  button.className = "sidebar-tool";
+  button.id = "tool-multi-select";
+  button.type = "button";
+  button.title = "Chon nhieu (M)";
+  button.innerHTML = `
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <rect x="2.5" y="4" width="6" height="6" rx="1.6" stroke="currentColor" stroke-width="1.4" />
+      <rect x="11.5" y="4" width="6" height="6" rx="1.6" stroke="currentColor" stroke-width="1.4" />
+      <rect x="7" y="11" width="6" height="6" rx="1.6" stroke="currentColor" stroke-width="1.4" />
+    </svg>
+    <span class="sidebar-label">Multi</span>
+    <span class="sidebar-key">M</span>
+  `;
+
+  const divider = sidebar.querySelector(".sidebar-divider");
+  if (divider) sidebar.insertBefore(button, divider);
+  else sidebar.appendChild(button);
+  return button;
+}
+
 function cs() {
   return styleData[currentStyle];
 }
@@ -2555,7 +2583,7 @@ async function requestAiNoteForImage(src) {
 function setMode(mode) {
   state.mode = mode;
   document.getElementById("tool-hand").classList.toggle("active", mode === "pan");
-  document.getElementById("tool-multi-select").classList.toggle("active", mode === "multi-select");
+  ensureMultiSelectTool()?.classList.toggle("active", mode === "multi-select");
   document.getElementById("tool-connect").classList.toggle("active", mode === "connect");
   document.getElementById("tool-delete-conn").classList.toggle("active", mode === "delete-conn");
   canvasWrapper.classList.toggle("connecting", mode === "connect");
@@ -3324,6 +3352,8 @@ function onViewerTouchEnd(event) {
 }
 
 function bindEvents() {
+  const multiSelectTool = ensureMultiSelectTool();
+
   if (authForm) {
     authForm.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -3405,7 +3435,7 @@ function bindEvents() {
   document.getElementById("btn-clear-all").addEventListener("click", deleteCurrentStyle);
   document.getElementById("tool-hand").addEventListener("click", () => setMode("pan"));
   document.getElementById("tool-add").addEventListener("click", openModal);
-  document.getElementById("tool-multi-select").addEventListener("click", () => setMode(state.mode === "multi-select" ? "pan" : "multi-select"));
+  multiSelectTool?.addEventListener("click", () => setMode(state.mode === "multi-select" ? "pan" : "multi-select"));
   document.getElementById("tool-connect").addEventListener("click", () => setMode(state.mode === "connect" ? "pan" : "connect"));
   document.getElementById("tool-delete-conn").addEventListener("click", () => setMode(state.mode === "delete-conn" ? "pan" : "delete-conn"));
 
